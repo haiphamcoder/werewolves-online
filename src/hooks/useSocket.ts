@@ -4,18 +4,21 @@ import type { ServerToClientEvents, ClientToServerEvents } from '@/shared/types'
 
 type TypedSocket = Socket<ServerToClientEvents, ClientToServerEvents>
 
-const socketUrl =
-  typeof import.meta.env.VITE_SOCKET_URL === 'string' &&
-  import.meta.env.VITE_SOCKET_URL.length > 0
-    ? import.meta.env.VITE_SOCKET_URL
-    : undefined
+/** Prefer explicit socket URL; otherwise reuse API base (same host:port as Express + Socket.IO). */
+function getSocketUrl(): string | undefined {
+  const direct = import.meta.env.VITE_SOCKET_URL
+  if (typeof direct === 'string' && direct.length > 0) return direct
+  const api = import.meta.env.VITE_API_URL
+  if (typeof api === 'string' && api.length > 0) return api
+  return undefined
+}
 
 export function useSocket() {
   const socketRef = useRef<TypedSocket | null>(null)
   const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
-    const socket: TypedSocket = io(socketUrl, {
+    const socket: TypedSocket = io(getSocketUrl(), {
       autoConnect: true,
       reconnection: true,
       reconnectionAttempts: 10,
@@ -42,9 +45,9 @@ export function useSocket() {
       if (!s) {
         return
       }
-      // socket.io typings use a narrow `emit`; widen for our typed event map
-      const emitLoose = s.emit as (ev: string, ...a: unknown[]) => void
-      emitLoose(event as string, ...args)
+      // Must call emit with socket as `this` — detached `s.emit(...)` loses binding and throws (_opts).
+      const emitBound = s.emit.bind(s) as (ev: string, ...a: unknown[]) => void
+      emitBound(event as string, ...args)
     },
     [],
   )

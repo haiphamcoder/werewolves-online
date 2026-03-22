@@ -148,6 +148,7 @@ export interface NightActionData {
 
 // Host Night Action Log
 export interface NightActionLog {
+  id: string
   step: NightStep
   roleName: string
   playerName: string

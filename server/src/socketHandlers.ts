@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import { Server, Socket } from 'socket.io'
 import type {
   ClientToServerEvents,
@@ -29,6 +30,11 @@ import {
 
 type TypedServer = Server<ClientToServerEvents, ServerToClientEvents>
 type TypedSocket = Socket<ClientToServerEvents, ServerToClientEvents>
+
+/** Payload for `host:night-action-log` — derived from socket contract (includes `id`). */
+type HostNightActionLogPayload = Parameters<
+  ServerToClientEvents['host:night-action-log']
+>[0]
 
 // Helpers
 function toPublicState(room: Room): RoomPublicState {
@@ -389,12 +395,14 @@ function emitHostNightActionLog(
   roleName: string,
   actionText: string,
 ) {
-  io.to(room.hostId).emit('host:night-action-log', {
+  const log: HostNightActionLogPayload = {
+    id: randomUUID(),
     step,
     roleName,
     playerName: '',
     action: actionText,
-  })
+  }
+  io.to(room.hostId).emit('host:night-action-log', log)
 }
 
 function applyHostDisruptorNight(

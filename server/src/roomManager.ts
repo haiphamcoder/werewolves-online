@@ -15,7 +15,7 @@ import type {
 import { NIGHT_ORDER } from './shared/types.js'
 import { ROLE_STEP_MAP } from './shared/constants.js'
 
-const generateRoomId = customAlphabet('ABCDEFGHJKLMNPQRSTUVWXYZ23456789', 6)
+const generateRoomId = customAlphabet('0123456789', 6)
 
 // Room
 export interface Room {
