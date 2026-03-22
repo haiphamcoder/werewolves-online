@@ -44,6 +44,10 @@ function corsOrigin(
 const app = express()
 const httpServer = createServer(app)
 
+/** Public probe: keep-alive + uptime checks must work even if CLIENT_ORIGIN is misconfigured */
+const healthCors = cors({ origin: true, methods: ['GET', 'OPTIONS'] })
+app.use('/health', healthCors)
+
 app.use(
   cors({
     origin: corsOrigin,

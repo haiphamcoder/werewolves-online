@@ -6,11 +6,11 @@
 
 ## Công nghệ
 
-| Phần | Công nghệ |
-| ---- | --------- |
+| Phần     | Công nghệ                                              |
+| -------- | ------------------------------------------------------ |
 | Frontend | React 19, TypeScript, Vite 8, Mantine UI, React Router |
-| Realtime | Socket.IO (client ↔ server) |
-| Backend | Node.js, Express, Socket.IO, CORS |
+| Realtime | Socket.IO (client ↔ server)                            |
+| Backend  | Node.js, Express, Socket.IO, CORS                      |
 
 Repo dùng **pnpm workspace**: gói gốc là SPA, thư mục `server/` là API + WebSocket.
 
@@ -35,11 +35,11 @@ Lệnh trên cài dependency cho cả frontend và gói `server/`.
 
 Tạo `.env` từ `.env.example`:
 
-| Biến | Mô tả |
-| ------ | -------- |
-| `VITE_SOCKET_URL` | URL gốc của backend (ưu tiên). Ví dụ: `http://localhost:3001` |
-| `VITE_API_URL` | Dùng khi không set `VITE_SOCKET_URL`; cùng host/port với Express + Socket.IO |
-| `VITE_PORT` | Port dev của Vite (tham khảo; mặc định Vite thường là 5173) |
+| Biến              | Mô tả                                                                        |
+| ----------------- | ---------------------------------------------------------------------------- |
+| `VITE_SOCKET_URL` | URL gốc của backend (ưu tiên). Ví dụ: `http://localhost:3001`                |
+| `VITE_API_URL`    | Dùng khi không set `VITE_SOCKET_URL`; cùng host/port với Express + Socket.IO |
+| `VITE_PORT`       | Port dev của Vite (tham khảo; mặc định Vite thường là 5173)                  |
 
 Nếu không set `VITE_SOCKET_URL` / `VITE_API_URL`, client không kết nối socket và không gọi `/health` (keep-alive).
 
@@ -47,11 +47,11 @@ Nếu không set `VITE_SOCKET_URL` / `VITE_API_URL`, client không kết nối s
 
 Tạo `server/.env` từ `server/.env.example`:
 
-| Biến | Mô tả |
-| ------ | -------- |
-| `PORT` | Cổng HTTP (mặc định `3001`) |
-| `CLIENT_ORIGIN` | Danh sách origin **phân tách bằng dấu phẩy** được phép gọi API / WebSocket (CORS). Ví dụ local: `http://localhost:5173`. Production: `https://ten-app-cua-ban.vercel.app` (không thêm `/` ở cuối). |
-| `ALLOW_VERCEL_PREVIEWS` | Đặt `true` trên host (ví dụ Render) nếu cần test bằng **Vercel preview** (`*.vercel.app`); các URL preview không trùng production domain. |
+| Biến                    | Mô tả                                                                                                                                                                                              |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PORT`                  | Cổng HTTP (mặc định `3001`)                                                                                                                                                                        |
+| `CLIENT_ORIGIN`         | Danh sách origin **phân tách bằng dấu phẩy** được phép gọi API / WebSocket (CORS). Ví dụ local: `http://localhost:5173`. Production: `https://ten-app-cua-ban.vercel.app` (không thêm `/` ở cuối). |
+| `ALLOW_VERCEL_PREVIEWS` | Đặt `true` trên host (ví dụ Render) nếu cần test bằng **Vercel preview** (`*.vercel.app`); các URL preview không trùng production domain.                                                          |
 
 ## Chạy phát triển (local)
 
@@ -111,13 +111,13 @@ werewolves-online/
 
 ## Lệnh npm/pnpm hữu ích (frontend)
 
-| Lệnh | Mô tả |
-| ------ | -------- |
-| `pnpm dev` | Dev server Vite |
-| `pnpm build` | Build production |
+| Lệnh           | Mô tả                  |
+| -------------- | ---------------------- |
+| `pnpm dev`     | Dev server Vite        |
+| `pnpm build`   | Build production       |
 | `pnpm preview` | Xem bản build trên máy |
-| `pnpm lint` | ESLint |
-| `pnpm test` | Vitest |
-| `pnpm format` | Prettier |
+| `pnpm lint`    | ESLint                 |
+| `pnpm test`    | Vitest                 |
+| `pnpm format`  | Prettier               |
 
 Trong `server/`: `pnpm dev` (watch), `pnpm build`, `pnpm start`.
