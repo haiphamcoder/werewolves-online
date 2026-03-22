@@ -12,25 +12,48 @@ function getAllowedOrigins(): string[] {
   if (!raw) return ['http://localhost:5173']
   return raw
     .split(',')
-    .map((s) => s.trim())
+    .map((s) => s.trim().replace(/\/$/, ''))
     .filter(Boolean)
 }
 
 const allowedOrigins = getAllowedOrigins()
+const allowedOriginSet = new Set(allowedOrigins)
+
+/** Vercel preview deploys use `*.vercel.app` origins not listed in CLIENT_ORIGIN */
+function isVercelPreviewOrigin(origin: string): boolean {
+  if (process.env.ALLOW_VERCEL_PREVIEWS !== 'true') return false
+  return /^https:\/\/[a-zA-Z0-9.-]+\.vercel\.app$/.test(origin)
+}
+
+function corsOrigin(
+  origin: string | undefined,
+  callback: (err: Error | null, allow?: boolean) => void,
+): void {
+  if (!origin) {
+    callback(null, true)
+    return
+  }
+  const normalized = origin.replace(/\/$/, '')
+  if (allowedOriginSet.has(normalized) || isVercelPreviewOrigin(normalized)) {
+    callback(null, true)
+    return
+  }
+  callback(null, false)
+}
 
 const app = express()
 const httpServer = createServer(app)
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: corsOrigin,
     methods: ['GET', 'POST', 'OPTIONS'],
   }),
 )
 
 const io = new Server(httpServer, {
   cors: {
-    origin: allowedOrigins,
+    origin: corsOrigin,
     methods: ['GET', 'POST', 'OPTIONS'],
   },
 })
