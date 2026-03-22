@@ -4,7 +4,7 @@ import type {
   NightStep,
   RoleId,
   RolePreset,
-} from './types'
+} from './types.js'
 
 // ── Role Names (Vietnamese) ─────────────────────────────────────────────────
 export const ROLE_NAMES: Record<RoleId, string> = {
