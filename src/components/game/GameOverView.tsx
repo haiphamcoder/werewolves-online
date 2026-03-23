@@ -158,6 +158,78 @@ export function GameOverView({ state }: Readonly<Props>) {
                       🌙 Đêm {n.night}
                     </Text>
                     <Stack gap={2}>
+                      {n.seerTarget && (
+                        <Text size="xs" c="dimmed">
+                          🔮 Thị xem:{' '}
+                          <Text span c={n.seerIsWolf ? 'red' : 'teal'}>
+                            {summary.players.find((p) => p.id === n.seerTarget)
+                              ?.name ?? '?'}
+                          </Text>{' '}
+                          {n.seerIsWolf ? '(là Sói)' : '(là Dân)'}
+                        </Text>
+                      )}
+                      {n.guardTarget && (
+                        <Text size="xs" c="dimmed">
+                          🛡️ Gác bảo vệ:{' '}
+                          <Text span c="teal">
+                            {summary.players.find((p) => p.id === n.guardTarget)
+                              ?.name ?? '?'}
+                          </Text>
+                        </Text>
+                      )}
+                      {n.witchSaved && (
+                        <Text size="xs" c="dimmed">
+                          🧪 Phù thủy cứu:{' '}
+                          <Text span c="teal">
+                            {summary.players.find((p) => p.id === n.witchSaved)
+                              ?.name ?? '?'}
+                          </Text>
+                        </Text>
+                      )}
+                      {n.witchKilled && (
+                        <Text size="xs" c="dimmed">
+                          🧪 Phù thủy độc giết:{' '}
+                          <Text span c="red">
+                            {summary.players.find((p) => p.id === n.witchKilled)
+                              ?.name ?? '?'}
+                          </Text>
+                        </Text>
+                      )}
+                      {n.disruptorTarget && (
+                        <Text size="xs" c="dimmed">
+                          🔇 Phá rối bịt miệng:{' '}
+                          <Text span c="yellow">
+                            {summary.players.find(
+                              (p) => p.id === n.disruptorTarget,
+                            )?.name ?? '?'}
+                          </Text>
+                        </Text>
+                      )}
+                      {n.hunterTarget && (
+                        <Text size="xs" c="dimmed">
+                          🎯 Săn nhắm:{' '}
+                          <Text span c="orange">
+                            {summary.players.find(
+                              (p) => p.id === n.hunterTarget,
+                            )?.name ?? '?'}
+                          </Text>
+                        </Text>
+                      )}
+                      {n.curseConverted && (
+                        <Text size="xs" c="dimmed">
+                          🐺 Cursed Wolf quy hàng:{' '}
+                          <Text span c="red">
+                            {summary.players.find(
+                              (p) => p.id === n.curseConverted,
+                            )?.name ?? '?'}
+                          </Text>
+                        </Text>
+                      )}
+                      {n.wolfCubDied && (
+                        <Text size="xs" c="dimmed" fs="italic">
+                          🐺 Sói con đã chết tối qua
+                        </Text>
+                      )}
                       {n.wolfTargets.length > 0 && (
                         <Text size="xs" c="dimmed">
                           🐺 Sói cắn:{' '}
