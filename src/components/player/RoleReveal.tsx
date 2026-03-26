@@ -9,8 +9,12 @@ import {
   Group,
   Badge,
   Progress,
+  Modal,
+  Divider,
+  List,
 } from '@mantine/core'
-import { IconCheck, IconPlayerPlay } from '@tabler/icons-react'
+import { IconCheck, IconPlayerPlay, IconInfoCircle } from '@tabler/icons-react'
+import { useState } from 'react'
 import type { GameState } from '@/hooks/useGame'
 import type { PlayerPrivateInfo } from '@/shared/types'
 import { ROLE_NAMES, ROLE_EMOJI, ROLE_DESC } from '@/shared/constants'
@@ -138,6 +142,118 @@ function RoleRevealPlayerLoading() {
   )
 }
 
+function HowToPlay({
+  roleId,
+  buttonLabel = 'Xem hướng dẫn cách chơi',
+}: Readonly<{
+  roleId?: PlayerPrivateInfo['role']
+  buttonLabel?: string
+}>) {
+  const [opened, setOpened] = useState(false)
+
+  return (
+    <>
+      <Button
+        fullWidth
+        variant="subtle"
+        color="gray"
+        leftSection={<IconInfoCircle size={18} />}
+        onClick={() => setOpened(true)}
+      >
+        {buttonLabel}
+      </Button>
+
+      <Modal
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title="Hướng dẫn cách chơi"
+        centered
+        size="lg"
+      >
+        <Stack gap="sm">
+          <Text size="sm" fw={700}>
+            Mục tiêu
+          </Text>
+          <List size="sm" spacing="xs">
+            <List.Item>
+              Phe{' '}
+              <Text span fw={700}>
+                Sói
+              </Text>{' '}
+              thắng khi số Sói ≥ số Dân.
+            </List.Item>
+            <List.Item>
+              Phe{' '}
+              <Text span fw={700}>
+                Dân
+              </Text>{' '}
+              thắng khi loại hết Sói.
+            </List.Item>
+          </List>
+
+          <Divider />
+
+          <Text size="sm" fw={700}>
+            Luật chung (cực ngắn)
+          </Text>
+          <List size="sm" spacing="xs">
+            <List.Item>
+              <Text span fw={700}>
+                Ban đêm
+              </Text>
+              : các vai có kỹ năng hành động theo lượt quản trò gọi.
+            </List.Item>
+            <List.Item>
+              <Text span fw={700}>
+                Ban ngày
+              </Text>
+              : thảo luận, suy luận và bỏ phiếu loại người nghi là Sói.
+            </List.Item>
+            <List.Item>
+              <Text span fw={700}>
+                Giữ bí mật
+              </Text>
+              : không tiết lộ vai trừ khi luật/phòng cho phép.
+            </List.Item>
+          </List>
+
+          {roleId && (
+            <>
+              <Divider />
+              <Text size="sm" fw={700}>
+                Vai của bạn
+              </Text>
+              <Paper
+                p="sm"
+                radius="md"
+                style={{
+                  background: 'rgba(26, 35, 50, 0.6)',
+                  border: '1px solid rgba(45, 61, 82, 0.3)',
+                }}
+              >
+                <Group gap="sm" wrap="nowrap">
+                  <Text size="lg">{ROLE_EMOJI[roleId]}</Text>
+                  <div>
+                    <Text size="sm" fw={700}>
+                      {ROLE_NAMES[roleId]}
+                    </Text>
+                    <Text size="sm" c="dimmed">
+                      {ROLE_DESC[roleId]}
+                    </Text>
+                  </div>
+                </Group>
+              </Paper>
+              <Text size="xs" c="dimmed" fs="italic">
+                Nếu bạn đã bấm “Đã ghi nhớ”, vai sẽ bị ẩn để bảo mật.
+              </Text>
+            </>
+          )}
+        </Stack>
+      </Modal>
+    </>
+  )
+}
+
 function RoleRevealPlayerConfirmed() {
   return (
     <Box
@@ -177,6 +293,8 @@ function RoleRevealPlayerConfirmed() {
               </Text>
             </Stack>
           </Paper>
+
+          <HowToPlay buttonLabel="Xem lại hướng dẫn cách chơi" />
 
           <Text size="xs" c="dimmed" ta="center" fs="italic">
             Đang chờ tất cả người chơi xác nhận...
@@ -257,6 +375,8 @@ function RoleRevealPlayerShowRole({
           >
             Đã ghi nhớ — Sẵn sàng
           </Button>
+
+          <HowToPlay roleId={role.role} />
 
           <Text size="xs" c="dimmed" ta="center" fs="italic">
             ⚠️ Hãy ghi nhớ vai trò. Sau khi bấm, vai sẽ được ẩn đi.
