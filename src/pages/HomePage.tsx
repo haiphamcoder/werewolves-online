@@ -4,6 +4,7 @@ import {
   Container,
   Title,
   Text,
+  Anchor,
   TextInput,
   Button,
   Stack,
@@ -336,6 +337,17 @@ export function HomePage() {
           {/* Footer */}
           <Text size="xs" c="dimmed" ta="center">
             The Werewolves of Millers Hollow — Phiên bản Việt Nam
+            <br />
+            Mã nguồn:{' '}
+            <Anchor
+              href="https://github.com/haiphamcoder/werewolves-online"
+              target="_blank"
+              rel="noreferrer"
+              c="dimmed"
+              style={{ textDecorationColor: 'rgba(255,255,255,0.25)' }}
+            >
+              GitHub
+            </Anchor>
           </Text>
 
           <GameGuideModal
