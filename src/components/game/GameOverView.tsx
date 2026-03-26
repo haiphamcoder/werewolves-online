@@ -36,6 +36,41 @@ export function GameOverView({ state }: Readonly<Props>) {
   }
 
   const isWolfWin = summary.winner === 'wolf'
+  const playerById = new Map(summary.players.map((p) => [p.id, p]))
+  const isPresent = <T,>(v: T | null | undefined): v is T => v != null
+
+  const actorByRole = (role: string) =>
+    summary.players.find((p) => p.role === role) ?? null
+
+  const renderActor = (roleId: string, fallbackLabel: string) => {
+    const p = actorByRole(roleId)
+    if (!p) return <Text span>{fallbackLabel}</Text>
+    return (
+      <Text span>
+        {ROLE_NAMES[p.role] ?? p.role} - {p.name}
+      </Text>
+    )
+  }
+
+  const renderWolvesActor = () => {
+    const wolves = summary.players.filter((p) => p.faction === 'wolf')
+    if (wolves.length === 0) return <Text span>{'Sói'}</Text>
+    if (wolves.length === 1) return <Text span>Sói - {wolves[0].name}</Text>
+    return <Text span>Sói - {wolves.map((w) => w.name).join(', ')}</Text>
+  }
+
+  const renderPerson = (id: string) => {
+    const p = playerById.get(id)
+    if (!p) return <Text span>{'?'}</Text>
+    return (
+      <Text span>
+        {ROLE_EMOJI[p.role]} {p.name}{' '}
+        <Text span c="dimmed">
+          ({ROLE_NAMES[p.role] ?? p.role})
+        </Text>
+      </Text>
+    )
+  }
 
   return (
     <Box
@@ -160,69 +195,72 @@ export function GameOverView({ state }: Readonly<Props>) {
                     <Stack gap={2}>
                       {n.seerTarget && (
                         <Text size="xs" c="dimmed">
-                          🔮 Thị xem:{' '}
+                          🔮(
+                          <Text span>{renderActor('seer', 'Tiên tri')}</Text>)
+                          Kiểm tra{' '}
                           <Text span c={n.seerIsWolf ? 'red' : 'teal'}>
-                            {summary.players.find((p) => p.id === n.seerTarget)
-                              ?.name ?? '?'}
+                            {renderPerson(n.seerTarget)}
                           </Text>{' '}
                           {n.seerIsWolf ? '(là Sói)' : '(là Dân)'}
                         </Text>
                       )}
                       {n.guardTarget && (
                         <Text size="xs" c="dimmed">
-                          🛡️ Gác bảo vệ:{' '}
+                          🛡️(
+                          <Text span>{renderActor('guard', 'Bảo vệ')}</Text>)
+                          Gác bảo vệ:{' '}
                           <Text span c="teal">
-                            {summary.players.find((p) => p.id === n.guardTarget)
-                              ?.name ?? '?'}
+                            {renderPerson(n.guardTarget)}
                           </Text>
                         </Text>
                       )}
                       {n.witchSaved && (
                         <Text size="xs" c="dimmed">
-                          🧪 Phù thủy cứu:{' '}
+                          🧪(
+                          <Text span>{renderActor('witch', 'Phù thủy')}</Text>)
+                          cứu:{' '}
                           <Text span c="teal">
-                            {summary.players.find((p) => p.id === n.witchSaved)
-                              ?.name ?? '?'}
+                            {renderPerson(n.witchSaved)}
                           </Text>
                         </Text>
                       )}
                       {n.witchKilled && (
                         <Text size="xs" c="dimmed">
-                          🧪 Phù thủy độc giết:{' '}
+                          🧪(
+                          <Text span>{renderActor('witch', 'Phù thủy')}</Text>)
+                          độc giết:{' '}
                           <Text span c="red">
-                            {summary.players.find((p) => p.id === n.witchKilled)
-                              ?.name ?? '?'}
+                            {renderPerson(n.witchKilled)}
                           </Text>
                         </Text>
                       )}
                       {n.disruptorTarget && (
                         <Text size="xs" c="dimmed">
-                          🔇 Phá rối bịt miệng:{' '}
+                          🔇(
+                          <Text span>
+                            {renderActor('disruptor', 'Phá rối')}
+                          </Text>
+                          ) bịt miệng:{' '}
                           <Text span c="yellow">
-                            {summary.players.find(
-                              (p) => p.id === n.disruptorTarget,
-                            )?.name ?? '?'}
+                            {renderPerson(n.disruptorTarget)}
                           </Text>
                         </Text>
                       )}
                       {n.hunterTarget && (
                         <Text size="xs" c="dimmed">
-                          🎯 Săn nhắm:{' '}
+                          🎯(
+                          <Text span>{renderActor('hunter', 'Thợ săn')}</Text>)
+                          nhắm:{' '}
                           <Text span c="orange">
-                            {summary.players.find(
-                              (p) => p.id === n.hunterTarget,
-                            )?.name ?? '?'}
+                            {renderPerson(n.hunterTarget)}
                           </Text>
                         </Text>
                       )}
                       {n.curseConverted && (
                         <Text size="xs" c="dimmed">
-                          🐺 Cursed Wolf quy hàng:{' '}
-                          <Text span c="red">
-                            {summary.players.find(
-                              (p) => p.id === n.curseConverted,
-                            )?.name ?? '?'}
-                          </Text>
+                          🐺(Cursed Wolf -{' '}
+                          <Text span>{renderPerson(n.curseConverted)}</Text>)
+                          quy hàng
                         </Text>
                       )}
                       {n.wolfCubDied && (
@@ -232,13 +270,15 @@ export function GameOverView({ state }: Readonly<Props>) {
                       )}
                       {n.wolfTargets.length > 0 && (
                         <Text size="xs" c="dimmed">
-                          🐺 Sói cắn:{' '}
+                          🐺(
+                          <Text span>{renderWolvesActor()}</Text>) cắn:{' '}
                           <Text span c="red">
                             {n.wolfTargets
+                              .map((id) => playerById.get(id))
+                              .filter(isPresent)
                               .map(
-                                (id) =>
-                                  summary.players.find((p) => p.id === id)
-                                    ?.name,
+                                (p) =>
+                                  `${ROLE_EMOJI[p.role]} ${p.name} (${ROLE_NAMES[p.role] ?? p.role})`,
                               )
                               .join(', ')}
                           </Text>
@@ -248,7 +288,13 @@ export function GameOverView({ state }: Readonly<Props>) {
                         <Text size="xs" c="dimmed">
                           💀 Chết:{' '}
                           <Text span c="red">
-                            {n.deaths.map((d) => d.playerName).join(', ')}
+                            {n.deaths
+                              .map((d) => {
+                                const p = playerById.get(d.playerId)
+                                if (!p) return d.playerName
+                                return `${ROLE_EMOJI[p.role]} ${p.name} (${ROLE_NAMES[p.role] ?? p.role})`
+                              })
+                              .join(', ')}
                           </Text>
                         </Text>
                       ) : (

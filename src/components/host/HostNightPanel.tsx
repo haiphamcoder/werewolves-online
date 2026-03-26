@@ -11,6 +11,7 @@ import {
   Select,
   Checkbox,
   ScrollArea,
+  SimpleGrid,
 } from '@mantine/core'
 import {
   IconMoon,
@@ -91,17 +92,17 @@ export function HostNightPanel({ state, actions }: Readonly<Props>) {
 
   return (
     <Box
+      mih="100vh"
+      py={{ base: 20, sm: 40 }}
       style={{
-        minHeight: '100vh',
         background:
           'radial-gradient(ellipse at center, #1a2332 0%, #0f1923 100%)',
-        paddingBlock: '40px',
       }}
     >
-      <Container size="md">
+      <Container size="md" px={{ base: 'sm', sm: 'md' }}>
         <Stack gap="xl">
           {/* Header */}
-          <Group justify="space-between">
+          <Group justify="space-between" wrap="wrap" gap="sm">
             <Stack gap={0}>
               <Title order={3} c="yellow">
                 Đêm {roundNumber}
@@ -110,22 +111,19 @@ export function HostNightPanel({ state, actions }: Readonly<Props>) {
                 QUẢN TRÒ ĐIỀU PHỐI
               </Text>
             </Stack>
-            <Badge size="xl" variant="dot" color="yellow">
+            <Badge size="lg" variant="dot" color="yellow">
               🌙 TRỜI TỐI
             </Badge>
           </Group>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 300px',
-              gap: '20px',
-            }}
+          <SimpleGrid
+            cols={{ base: 1, md: 2 }}
+            spacing={{ base: 'md', sm: 'lg' }}
           >
             {/* Left Column: Script & Action */}
             <Stack gap="lg">
               <Paper
-                p="xl"
+                p={{ base: 'md', sm: 'xl' }}
                 radius="md"
                 style={{
                   background: 'rgba(26, 35, 50, 0.9)',
@@ -147,7 +145,7 @@ export function HostNightPanel({ state, actions }: Readonly<Props>) {
 
               {isActionRequired && (
                 <Paper
-                  p="xl"
+                  p={{ base: 'md', sm: 'xl' }}
                   radius="md"
                   style={{
                     background: 'rgba(26, 35, 50, 0.9)',
@@ -182,7 +180,7 @@ export function HostNightPanel({ state, actions }: Readonly<Props>) {
                         />
                         {/* If wolf cub died, can bite two */}
                         <Text size="xs" c="dimmed">
-                          Nếu Só con chết, có thể chọn mục tiêu thứ 2.
+                          Nếu Sói con chết, có thể chọn mục tiêu thứ 2.
                         </Text>
                         <Select
                           label="Người bị cắn thứ 2 (nếu có)"
@@ -326,7 +324,7 @@ export function HostNightPanel({ state, actions }: Readonly<Props>) {
                 <Text fw={600} size="sm" mb="sm" c="dimmed">
                   NHẬT KÝ ĐÊM:
                 </Text>
-                <ScrollArea h={400}>
+                <ScrollArea h={{ base: 240, sm: 300, md: 400 }}>
                   <Stack gap="xs">
                     {hostNightLogs.length === 0 ? (
                       <Text size="xs" c="dimmed" ta="center" py="xl">
@@ -351,7 +349,7 @@ export function HostNightPanel({ state, actions }: Readonly<Props>) {
                 </ScrollArea>
               </Paper>
             </Stack>
-          </div>
+          </SimpleGrid>
         </Stack>
       </Container>
     </Box>
