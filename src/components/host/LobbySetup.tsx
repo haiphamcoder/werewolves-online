@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, useState } from 'react'
 import {
   Container,
   Paper,
@@ -12,6 +12,7 @@ import {
   Box,
   Tooltip,
   CopyButton,
+  Modal,
 } from '@mantine/core'
 import {
   IconPlus,
@@ -69,6 +70,7 @@ interface Props {
 }
 
 export function LobbySetup({ state, actions }: Readonly<Props>) {
+  const [qrOpened, setQrOpened] = useState(false)
   const roleConfig = useMemo(
     () => state.roomStatus?.roleConfig ?? FALLBACK_ROLE_CONFIG,
     [state.roomStatus?.roleConfig],
@@ -118,6 +120,8 @@ export function LobbySetup({ state, actions }: Readonly<Props>) {
     [roleConfig, actions],
   )
 
+  const joinUrl = `${globalThis.window === undefined ? '' : globalThis.window.location.origin}/?room=${state.roomId ?? ''}`
+
   return (
     <Box
       style={{
@@ -127,6 +131,41 @@ export function LobbySetup({ state, actions }: Readonly<Props>) {
     >
       <Container size="sm" py="xl">
         <Stack gap="lg">
+          <Modal
+            opened={qrOpened}
+            onClose={() => setQrOpened(false)}
+            centered
+            size="auto"
+            title="Quét mã để tham gia"
+          >
+            <Stack align="center" gap="sm">
+              <Paper
+                p="md"
+                radius="md"
+                style={{
+                  background: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <QRCodeSVG
+                  value={joinUrl}
+                  size={320}
+                  bgColor="#ffffff"
+                  fgColor="#1A1B1E"
+                  level="M"
+                />
+              </Paper>
+              <Text size="xs" c="dimmed" ta="center">
+                Nếu không quét được, nhập mã{' '}
+                <strong style={{ color: 'var(--color-amber)' }}>
+                  {state.roomId}
+                </strong>
+              </Text>
+            </Stack>
+          </Modal>
+
           {/* Header with room code + QR */}
           <Paper
             p="lg"
@@ -176,19 +215,21 @@ export function LobbySetup({ state, actions }: Readonly<Props>) {
                 </Badge>
               </div>
               {/* QR Code for quick join */}
-              <Tooltip label="Quét mã QR để tham gia" position="left">
+              <Tooltip label="Bấm để phóng to QR" position="left">
                 <Paper
                   p={8}
                   radius="md"
+                  onClick={() => setQrOpened(true)}
                   style={{
                     background: '#ffffff',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    cursor: 'pointer',
                   }}
                 >
                   <QRCodeSVG
-                    value={`${globalThis.window === undefined ? '' : globalThis.window.location.origin}/?room=${state.roomId ?? ''}`}
+                    value={joinUrl}
                     size={100}
                     bgColor="#ffffff"
                     fgColor="#1A1B1E"
