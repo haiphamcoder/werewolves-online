@@ -27,17 +27,35 @@ export function PlayerHelpAffix({ state }: Readonly<{ state: GameState }>) {
 
   const roleId = state.myRole?.role ?? null
   const isWolfSide = roleId ? isWolfFactionRole(roleId) : false
+  const toggleGuide = () => {
+    setGuideOpened((prev) => {
+      const next = !prev
+      if (next) setRoleOpened(false)
+      return next
+    })
+  }
+  const toggleRole = () => {
+    setRoleOpened((prev) => {
+      const next = !prev
+      if (next) setGuideOpened(false)
+      return next
+    })
+  }
 
   return (
     <>
-      <Affix position={{ bottom: 16, right: 16 }} zIndex={500}>
-        <Group gap="xs">
+      <Affix
+        position={{ bottom: 16, left: '50%' }}
+        zIndex={500}
+        style={{ transform: 'translateX(-50%)' }}
+      >
+        <Group gap="xs" justify="center" wrap="nowrap" visibleFrom="sm">
           <Button
             size="xs"
             variant="light"
             color="gray"
             leftSection={<IconBook size={16} />}
-            onClick={() => setGuideOpened(true)}
+            onClick={toggleGuide}
             style={{ backdropFilter: 'blur(10px)' }}
           >
             Hướng dẫn
@@ -47,7 +65,30 @@ export function PlayerHelpAffix({ state }: Readonly<{ state: GameState }>) {
             variant="light"
             color="gray"
             leftSection={<IconMask size={16} />}
-            onClick={() => setRoleOpened(true)}
+            onClick={toggleRole}
+            style={{ backdropFilter: 'blur(10px)' }}
+          >
+            Vai của tôi
+          </Button>
+        </Group>
+
+        <Group gap="xs" justify="center" wrap="wrap" hiddenFrom="sm">
+          <Button
+            size="xs"
+            variant="light"
+            color="gray"
+            leftSection={<IconBook size={16} />}
+            onClick={toggleGuide}
+            style={{ backdropFilter: 'blur(10px)' }}
+          >
+            Hướng dẫn
+          </Button>
+          <Button
+            size="xs"
+            variant="light"
+            color="gray"
+            leftSection={<IconMask size={16} />}
+            onClick={toggleRole}
             style={{ backdropFilter: 'blur(10px)' }}
           >
             Vai của tôi
@@ -80,21 +121,22 @@ export function PlayerHelpAffix({ state }: Readonly<{ state: GameState }>) {
         }}
       >
         {roleId ? (
-          <Stack gap="md">
+          <Stack gap="md" align="center">
             <Paper
               p="md"
               radius="md"
               style={{
                 background: 'rgba(15, 25, 35, 0.6)',
                 border: `1px solid ${isWolfSide ? 'rgba(229, 83, 75, 0.25)' : 'rgba(70, 147, 212, 0.25)'}`,
+                width: '100%',
               }}
             >
-              <Stack gap={6}>
+              <Stack gap={6} align="center" ta="center">
                 <Text style={{ fontSize: '2.5rem' }}>{ROLE_EMOJI[roleId]}</Text>
                 <Text size="lg" fw={800} c={isWolfSide ? 'red' : 'blue'}>
                   {ROLE_NAMES[roleId]}
                 </Text>
-                <Text size="sm" c="dimmed">
+                <Text size="sm" c="dimmed" maw={360}>
                   {ROLE_DESC[roleId]}
                 </Text>
               </Stack>
