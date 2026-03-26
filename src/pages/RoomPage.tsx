@@ -5,6 +5,7 @@ import { useGameContext } from '@/hooks/GameContext'
 import { LobbySetup } from '@/components/host/LobbySetup'
 import { RoleRevealView } from '@/components/player/RoleReveal'
 import { PlayerGameView } from '@/components/player/PlayerGameView'
+import { PlayerHelpAffix } from '@/components/player/PlayerHelpAffix'
 import { HostNightPanel } from '@/components/host/HostNightPanel'
 import { HostDayPanel } from '@/components/host/HostDayPanel'
 import { GameOverView } from '@/components/game/GameOverView'
@@ -53,7 +54,12 @@ export function RoomPage() {
 
   // ── Role Reveal (Common) ─────────────────────────────────────────────
   if (state.phase === 'role-reveal') {
-    return <RoleRevealView state={state} actions={actions} />
+    return (
+      <>
+        <RoleRevealView state={state} actions={actions} />
+        <PlayerHelpAffix state={state} />
+      </>
+    )
   }
 
   // ── Game Over (Common) ──────────────────────────────────────────────
@@ -80,6 +86,11 @@ export function RoomPage() {
     }
   } else {
     // Player view is passive for all game phases
-    return <PlayerGameView state={state} />
+    return (
+      <>
+        <PlayerGameView state={state} />
+        <PlayerHelpAffix state={state} />
+      </>
+    )
   }
 }
